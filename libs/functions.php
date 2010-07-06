@@ -4,18 +4,18 @@
  *
  * In this file are functions, which is required for class MHD
  *
- * For more information please see http://www.janci.net/about/mhd-class
+ * For more information please see http://www.janci.net/download/about/MHDv2
  *
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License 3
- * @copyright Copyright (c) 2009 Jan Svantner
+ * @copyright Copyright (c) 2009, 2010 Jan Svantner
  * @package MHD
  */
 
 /**
  * @author Jan Svantner <janci@janci.net>
- * @link http://www.janci.net/about/mhd-class Project Home Page
+ * @link http://www.janci.net/download/about/MHDv2 Project Home Page
  * @package MHD
- * @version 2.0 Development (20.12.2009)
+ * @version 2.0 Development (01.08.2010) alpha.4 (Testing version)
  */
 
 /**

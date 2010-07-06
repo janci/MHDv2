@@ -5,7 +5,7 @@ require_once('functions.php');
  *
  * In this source file is a class cache with Memcache (using RAM memory)
  *
- * For more information please see http://www.janci.net/about/mhd-class
+ * For more information please see http://www.janci.net/download/about/MHDv2
  *
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License 3
  * @copyright Copyright (c) 2009, 2010 Jan Svantner
@@ -14,9 +14,9 @@ require_once('functions.php');
 
 /**
  * @author Jan Svantner <janci@janci.net>
- * @link http://www.janci.net/about/mhd-class Project Home Page
+ * @link http://www.janci.net/download/about/MHDv2 Project Home Page
  * @package MHD
- * @version 2.0 Development (20.12.2009) alpha.2 (Testing version)
+ * @version 2.0 Development (01.08.2010) alpha.4 (Testing version)
  * @property Array $last_update info about last online update data
  */
 class DummyCache

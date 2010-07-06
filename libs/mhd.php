@@ -9,7 +9,7 @@ require_once ('file_cache.php');
  * This source file is a class for generating and getting information for connexion
  * in City Kosice, Slovakia.
  *
- * For more information please see http://www.janci.net/about/mhd-class
+ * For more information please see http://www.janci.net/download/about/MHDv2
  *
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License 3
  * @copyright Copyright (c) 2009, 2010 Jan Svantner
@@ -18,13 +18,13 @@ require_once ('file_cache.php');
 
 /**
  * @author Jan Svantner <janci@janci.net>
- * @link http://www.janci.net/about/mhd-class Project Home Page
+ * @link http://www.janci.net/download/about/MHDv2 Project Home Page
  * @final
  * @package MHD
- * @version 2.0 Development (20.12.2009) alpha.2 (Testing version)
+ * @version 2.0 Development (01.08.2010) alpha.4 (Testing version)
  * @property string $links url link for parsing
  * @property integer $expire_time how long be data cached
- * @todo TODO: for PO|BA etc.
+ * @todo: FIX caching
  */
 final class MHD
 {
@@ -193,7 +193,6 @@ final class MHD
 		if (isset($this->departures[$number_of_service])) return $this->departures[$number_of_service];
 		$a = self::getStops($number_of_service);
 		$name_of_stop = iconv('utf-8','windows-1250',$name_of_stop);
-	    //var_dump($this->stops[$number_of_service]);
 		$url = $this->link.$this->stops[$number_of_service][$direction][$name_of_stop]['url'];
 		
 		if ($url===$this->link && $a === false) {
@@ -233,16 +232,14 @@ final class MHD
 		unset($match);
         if (!preg_match_all('#<font style="font-size: 10pt">([0-9]+)</font>.*(solid"><b>)|<font style="font-size: 10pt">([0-9]+)</font>.*("tab0"><font)#sU',$content, $match)) echo "";
 
-		//preg_match_all('#<font style="font-size: 10pt">([0-9]+)</font>.*"><b>#sU',$content, $match); //for PO
-		//preg_match_all('#<font style="font-size: ([0-9]{1,2})pt">([0-9]+)</font>.*"><b>#sU',$content, $match);
-	    //fix pre poslednu hodinu
+	    //oprava pre poslednu hodinu
 		if (is_numeric(end($match['3']))) {
           array_pop($match['1']);
 		  array_pop($match['2']);
 		  $match['1'][] = end($match['3']);
 		  $match['2'][] = end($match['4']);
         }
-		//var_dump($match['0']);
+		
 		$j=0;
 		for ($i=0;$i<count($match['1']);$i++) {
 			preg_match_all('#\.</font>&nbsp;([0-9]+)#',$match['0'][$i],$hour_dep);

@@ -5,7 +5,7 @@
  * This source file is a class for generating and getting information for connexion
  * in City Kosice, Slovakia.
  *
- * For more information please see http://janci.net/download/about/MHDv2
+ * For more information please see http://www.janci.net/download/about/MHDv2
  *
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License 3
  * @copyright Copyright (c) 2009, 2010 Jan Svantner
