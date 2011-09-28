@@ -9,7 +9,7 @@ require_once ('file_cache.php');
  * This source file is a class for generating and getting information for connexion
  * in City Kosice, Slovakia.
  *
- * For more information please see http://www.janci.net/download/about/MHDv2
+ * For more information please see http://www.janci.net/about/mhd-class
  *
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License 3
  * @copyright Copyright (c) 2009, 2010 Jan Svantner
@@ -18,13 +18,14 @@ require_once ('file_cache.php');
 
 /**
  * @author Jan Svantner <janci@janci.net>
- * @link http://www.janci.net/download/about/MHDv2 Project Home Page
+ * @author Peter Piatničko <peterpiatnicko@zoznam.sk>
+ * @link http://www.janci.net/about/mhd-class Project Home Page
  * @final
  * @package MHD
- * @version 2.0 Development (01.08.2010) alpha.4 (Testing version)
+ * @version 2.0 Development (20.12.2009) alpha.2 (Testing version)
  * @property string $links url link for parsing
  * @property integer $expire_time how long be data cached
- * @todo: FIX caching
+ * @todo TODO: for PO|BA etc.
  */
 final class MHD
 {
@@ -86,7 +87,7 @@ final class MHD
 	 */	
 	private function cacher() {
 		if (is_null($this->cache)) {
-			if (class_exists('Memcache')) 
+			if (class_exists('Memcache') && $this->cacheType!=='filecache') 
 				$this->cache = new MemoryCache();
 			else
 				$this->cache = new FileCache(dirname(__FILE__).'/../cache/'.md5($this->link).'.tmp');
@@ -193,8 +194,9 @@ final class MHD
 		if (isset($this->departures[$number_of_service])) return $this->departures[$number_of_service];
 		$a = self::getStops($number_of_service);
 		$name_of_stop = iconv('utf-8','windows-1250',$name_of_stop);
+	    //var_dump($this->stops[$number_of_service]);
 		$url = $this->link.$this->stops[$number_of_service][$direction][$name_of_stop]['url'];
-		
+		//echo $this->link; exit;
 		if ($url===$this->link && $a === false) {
 			error(__('I can\'t find departure, which you find!'));
 			return false;
@@ -210,8 +212,12 @@ final class MHD
 			return false;
 		}
 		
+		$content = str_replace(array('<span class="cp_nizkopodlazne">','</span>'),"",$content);
+		
+		
 		preg_match('#td id="stred">(.*)<div class="netlacit"#s',$content, $match);
 		preg_match('$.*<td style="border: 0px" width="100%"><table style="border: 0px" class="tab" border="0" cellpadding="0" cellspacing="0" align="center" width="100%">(.*)$s',$match['1'],$match2);
+		
 		
 		$content = str_replace('</center>',"</center>\n",$match2[1]);
 		$content = str_replace('<center>',"\n<center>",$content);
@@ -229,20 +235,15 @@ final class MHD
 		/* end get category */
 		
 		/* get minutes */
-		unset($match);
-        if (!preg_match_all('#<font style="font-size: 10pt">([0-9]+)</font>.*(solid"><b>)|<font style="font-size: 10pt">([0-9]+)</font>.*("tab0"><font)#sU',$content, $match)) echo "";
-
-	    //oprava pre poslednu hodinu
-		if (is_numeric(end($match['3']))) {
-          array_pop($match['1']);
-		  array_pop($match['2']);
-		  $match['1'][] = end($match['3']);
-		  $match['2'][] = end($match['4']);
-        }
+		unset($match);		
+		if (!preg_match_all('#<font style="font-size: 10pt">([0-9]+)</font>.*><td class#sU',$content, $match)) echo ""; // "><b>
+		
+		//preg_match_all('#<font style="font-size: 10pt">([0-9]+)</font>.*"><b>#sU',$content, $match); //for PO
+		//preg_match_all('#<font style="font-size: ([0-9]{1,2})pt">([0-9]+)</font>.*"><b>#sU',$content, $match);
 		
 		$j=0;
 		for ($i=0;$i<count($match['1']);$i++) {
-			preg_match_all('#\.</font>&nbsp;([0-9]+)#',$match['0'][$i],$hour_dep);
+			preg_match_all('#\.</font>&nbsp;([0-9]+([a-zA-Z]){0,2})#',$match['0'][$i],$hour_dep);
 			if (isset($final[$j][$match['1'][$i]])) $j++;
 			$final[$category[$j]][$match['1'][$i]] = $final[$j][$match['1'][$i]] = $hour_dep['1'];
 			unset($hour_dep);
